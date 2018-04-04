@@ -60,6 +60,3 @@ Hiện thực solution cho game block and hole
     Breadth first search
     
     Cố gắng tìm ra hàm lượng giá để áp dụng heuristic
-    
-    
-    
