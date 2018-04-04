@@ -198,6 +198,10 @@ class Block:
             return 2
         else: return 1
 
+    def __eq__(self, other):
+        """hai Block bằng nhau khi vị trí của các node bằng nhau"""
+        return self.A.top(other.A) and self.B.top(other.B)
+
     def _toStringForTest(self):
         return "[" + str(self.A._toStringForTest()) + " ; " + str(self.B._toStringForTest()) + "]"
 
