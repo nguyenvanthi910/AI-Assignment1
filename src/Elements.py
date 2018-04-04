@@ -1,6 +1,5 @@
 #Mô tả những thành phần chính trong game
 
-#Node là mô tả 1 khối hình lập phương
 class Node:
     """
     Mô tả trạng thái của một khối lập phương\n
@@ -170,6 +169,7 @@ class Block:
             self.autoControl()
 
         #Di chuyển sang trái
+
     def moveright(self):
         if self.control == None:
             if self.A.isUp(self.B) or self.A.isDown(self.B): #2 khối nằm dọc
@@ -192,6 +192,52 @@ class Block:
             self.B.moveright()
             self.autoControl()
 
+    def weight(self):
+        """Khối lượng của tại block nếu nằm kể là 1 và chồng lên nhau là 2"""
+        if self.A.top(self.B):
+            return 2
+        else: return 1
+
     def _toStringForTest(self):
         return "[" + str(self.A._toStringForTest()) + " ; " + str(self.B._toStringForTest()) + "]"
+
+class Point:
+    """
+    Điểm trên bản đồ\n
+    w: trọng số chịu tải khối lượng.
+    x, y là tọa độ nằm trên bản đồ
+    """
+    def __init__(self, w, x, y):
+        self.w = w
+        self.x = x
+        self.y = y
+
+
+#Mô tả nút nhấn trên bản đồ (map)
+#Có những loại nút nhân sau
+#Toggle: Đó là mỗi lần nhấn nó tắt/hiện thêm ô cho map.
+    #Ngoài ra nó còn có trọng số khối lượng. Ví dụ có nút nhấn
+    #phãi 2 ô chồng nhau mới có tác  dụng.
+#Show: Đó là khi nhấn vào nó sẽ hiện thêm ô cho map và nhấn lần nữa nó sẽ không có tác dụng
+    #Nó cũng có trọng số khối lượng như Toggle.
+#Hide: Tương tự như Up nhưng nó ẩn ô trên map
+#Split: Nút này có tác dụng chia đôi Block thành 2 khối lập phương. Cũng có trọng số khối lượng.
+#Đây là key để phân biệt các loại button
+TOGGLEBTN = 'TOGGLEBUTTON'
+UPBTN = 'SHOWBUTTON'
+DOWNBTN = 'HIDEBUTTON'
+SPLITBTN = 'SPLITBUTTON'
+
+class Button(Point):
+    """
+    Nút nhấn có trên bản đồ\n
+    type: là 1 trong 4 loại được mô tả ở trên\n
+    x, y là tọa độ của nó
+    lsCoordinate: là danh sách các tọa độ mà nó có tác dụng. Ví dụ [[1 2], [1 3]] danh sách có 2 tọa độ (1,2) và (1,3)
+    """
+    def __init__(self, type, x, y, lsCoordinate):
+        self.x = x
+        self.y = y
+        self.type = type
+        self.lsCoordinate = lsCoordinate
 
