@@ -53,6 +53,16 @@ Hiện thực solution cho game block and hole
         
 ### Hoạt động của chương trình
     1. Load bản đồ theo fomat từ file txt vào đối tượng Map, Block
+        Fomat:
+        - Bản đồ là ma trận hình chữ nhật bất kì tùy theo level trong game
+        - Nếu vị trí đó không phải là nền thì là 0 nếu là nền thì 1 hoặc 2
+        - Nếu là Toggle là T(x) với x là trọng số 1 hoặc 2
+        - Show: S(x) tương tự Toggle
+        - Hide: H(x)
+        - Goal: G : điểm kết thúc
+        - Init: I(x) điểm bắt đầu. Nếu x là 2 thì bắt đầu là 2 khối chồng nhau và trên bản đồ chỉ có 1 I.
+        Trường hợp 2 khối kề nhau thì trên bản đồ là 2 điểm I(1). Trường hợp 2 điểm I không kề nhau thì I(0)
+        và I(1) với I(0) là điểm được xét điều khiển cho nó.
     2. Thực hiện việc chuyển trạng thái cho tới khi đến mục tiêu
     
 ### Giải thuật sử dụng
