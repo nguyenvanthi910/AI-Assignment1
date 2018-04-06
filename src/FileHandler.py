@@ -1,4 +1,9 @@
-from src import Elements
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+try:
+	from src import Elements
+except ImportError:
+	import Elements
 
 def pairwise(iterable):
     "s -> (s0, s1), (s2, s3), (s4, s5), ..."

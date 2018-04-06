@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 #Mô tả những thành phần chính trong game
 
 class Node:

@@ -1,7 +1,14 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from copy import deepcopy
-from src import Elements
+try:
+	from src import Elements
+	import src.FileHandler as file
+except ImportError:
+	import Elements
+	import FileHandler as file
 
-import src.FileHandler as file
+
 
 testcase = "../testcase/"
 def get_textcase(i): return testcase + str(i)
