@@ -11,15 +11,17 @@ except ImportError:
 
 
 testcase = "../testcase/"
-def get_textcase(i): return testcase + str(i)
+mapweb = "../maps/web/"
+def get_testcase(i): return testcase + str(i)
+def get_web_map(i): return mapweb + str(i)
 
-map, block = file.readFrom(get_textcase(2))
+map, block = file.readFrom(get_web_map(2))
 
 
-UP = " -> move up "
-DOWN = " -> move down "
-LEFT = " -> move left "
-RIGHT = " -> move right "
+UP = " -----------> MOVE UP "
+DOWN = " -----------> MOVE DOWN "
+LEFT = " -----------> MOVE LEFT "
+RIGHT = " -----------> MOVE RIGHT "
 
 class State():
     "Trạng thái của trò chơi"
@@ -27,21 +29,38 @@ class State():
         self.block = block
         self.parent = None
         self.move = None
+        self.map = None
+        self.mapChanged = False
+
+    def getMap(self):
+        if(self.mapChanged == True):
+            return self.map
+        else:
+            p = self.parent
+            while p.mapChanged == False:
+                p = p.parent
+            return p.map
+
+
+    def checkMapChange(self):
+        m = deepcopy(self.getMap())
+        check = m.enableButton(self.block)
+        self.mapChanged = check
+        if check == True:
+            self.map = m
 
     def isValid(self):
-        return map.isValid(self.block)
+        return self.getMap().isValid(self.block)
 
     def isGoal(self):
-        return map.isGoal(self.block)
+        return self.getMap().isGoal(self.block)
 
     def __eq__(self, other):
-        return self.block == other.block
+        return self.block == other.block and self.getMap() == other.getMap()
 
     def __repr__(self):
-        return str(self.block) + str(self.move)
-
-print(map)
-print(block)
+        return str(self.move) + "\n" + str(self.getMap().__repr__(self.block)) + "\n" +\
+          "\n".join("\t\t\t||" for i in range(2)) + "\n\t\t\t\\/\n"
 
 def nextState(current):
     children = []
@@ -79,23 +98,27 @@ def nextState(current):
                 newblock.moveright()
         newstate = State(newblock)
         newstate.move = mv
+        newstate.parent = current
+        newstate.checkMapChange()
         if newstate.isValid():
-            newstate.parent = current
             children.append(newstate)
     return children
 
 def breadth_first_search():
     initState = State(block)
+    initState.map = map
+    initState.mapChanged = True
+    
     queue = list()
     explored = list()
     queue.append(initState)
     while queue:
         state = queue.pop(0)
-        explored.append(state)
+       # print state
         if state.isGoal():
-            print("Explored: " + str(len(explored)) + " state")
-            print(state.block)
+            printSolution(state)
             return
+        explored.append(state)
         children = nextState(state)
         for i in children:
             if i not in explored:
@@ -113,4 +136,5 @@ def printSolution(state):
     for i,t in enumerate(root):
         print(str(i) + '\t' + str(t))
 
+print map
 breadth_first_search()

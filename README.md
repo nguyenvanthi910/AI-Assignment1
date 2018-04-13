@@ -70,3 +70,17 @@ Hiện thực solution cho game block and hole
     Breadth first search
     
     Cố gắng tìm ra hàm lượng giá để áp dụng heuristic
+
+
+Game code:
+1. 780464
+2. 290299
+3. 918660
+4. 520967
+5. 028431
+6. 524282
+7. 189493
+8. 499707
+9. 074355
+10. 300590
+12. 958640
