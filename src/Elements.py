@@ -32,11 +32,11 @@ class Node:
 
     #kiểm tra nằm bên trên
     def isUp(self, other):
-        return self.y - 1 == other.y and self.x == other.x
+        return self.y + 1 == other.y and self.x == other.x
 
     #Kiểm tra nằm bên dưới
     def isDown(self, other):
-        return self.y + 1 == other.y and self.x == other.x
+        return self.y - 1 == other.y and self.x == other.x
 
     #Kiểm tra xem có nằm chông lên khối khác không
     def top(self, other):
@@ -237,7 +237,7 @@ class Point:
     w: trọng số chịu tải khối lượng hiện tại.
     wBefore: trọng số chịu tải trước đó. Lưu nếu toggle sẽ restore lại
     """
-    def __init__(self, w, wBefore = 0):
+    def __init__(self, w, wBefore = 2):
         self.w = w
         self.wBefore = wBefore
 
@@ -287,7 +287,7 @@ class Button(Point):
         self.w = w
 
     def enable(self, block):
-        if block.weight() == self.w:
+        if block.weight() >= self.w:
             if self.type == TOGGLEBTN:
                 for i in self.lsPoint:
                     i.toggle()
@@ -301,7 +301,7 @@ class Button(Point):
                 block.split(self.lsPoint[0].x, self.lsPoint[0].y,
                             self.lsPoint[1].x, self.lsPoint[1].y,
                             block.seclectControl(self.lsPoint[0].x, self.lsPoint[0].y))
-
+##
     def isGoal(self):
         return type == GOAL
 
@@ -330,7 +330,9 @@ class Map:
         if self.isOnMap(block):
             A = block.A
             B = block.B
-            if self.matrix[A.x][A.y].isValid(block.weight()) and \
+            if type(self.matrix[A.x][A.y]) is Point and \
+               self.matrix[A.x][A.y].isValid(block.weight()) and \
+               type(self.matrix[B.x][B.y]) is Point and \
                 self.matrix[B.x][B.y].isValid(block.weight()):
                 return True
         return False
@@ -341,10 +343,14 @@ class Map:
     def enableButton(self, block):
         A = block.A
         B = block.B
-        if(type(self.matrix[A.x][A.y]) is Button):
-            self.matrix[A.x][A.y].enable(block)
-        if(type(self.matrix[B.x][B.y]) is Button):
-            self.matrix[B.x][B.y].enable(block)
+        if A.top(B) :
+            if type(self.matrix[A.x][A.y]) is Button :
+                self.matrix[A.x][A.y].enable(block)
+        else :
+            if(type(self.matrix[A.x][A.y]) is Button):
+                self.matrix[A.x][A.y].enable(block)
+            if(type(self.matrix[B.x][B.y]) is Button):
+                self.matrix[B.x][B.y].enable(block)
 
     def __repr__(self):
         return "\t%s\nSize: %d x %d\n\n" % (self.name, self.row, self.col) + "\n".join(str(i) for i in self.matrix)

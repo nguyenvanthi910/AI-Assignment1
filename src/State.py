@@ -8,7 +8,8 @@ def get_textcase(i): return testcase + str(i)
 
 map, block = file.readFrom(get_textcase(2))
 
-
+print(map.matrix[block.A.x][block.A.y])
+print(map.matrix[block.B.x][block.B.y])
 UP = " -> move up "
 DOWN = " -> move down "
 LEFT = " -> move left "
@@ -70,6 +71,7 @@ def nextState(current):
             elif i - 4 == 3:
                 mv = RIGHT + newblock.getCtrString()
                 newblock.moveright()
+        
         newstate = State(newblock)
         newstate.move = mv
         if newstate.isValid():
