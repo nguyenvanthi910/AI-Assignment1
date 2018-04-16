@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from copy import deepcopy
 #Mô tả những thành phần chính trong game
 
 class Node:
@@ -24,19 +27,27 @@ class Node:
 
     #Kiểm tra nằm bên trái
     def isLeft(self, other):
-        return self.x + 1 == other.x and self.y == other.y
+        return self.y + 1 == other.y and self.x == other.x
 
     #Kiểm tra nằm bên phải
     def isRight(self, other):
-        return self.x - 1 == other.x and self.y == other.y
+        return self.y - 1 == other.y and self.x == other.x
 
     #kiểm tra nằm bên trên
     def isUp(self, other):
+<<<<<<< HEAD
         return self.y + 1 == other.y and self.x == other.x
 
     #Kiểm tra nằm bên dưới
     def isDown(self, other):
         return self.y - 1 == other.y and self.x == other.x
+=======
+        return self.x + 1 == other.x and self.y == other.y
+
+    #Kiểm tra nằm bên dưới
+    def isDown(self, other):
+        return self.x - 1 == other.x and self.y == other.y
+>>>>>>> 966d35fd4ab24474a1ecd93a39e19cd2f23f129b
 
     #Kiểm tra xem có nằm chông lên khối khác không
     def top(self, other):
@@ -44,25 +55,25 @@ class Node:
 
     #Di chuyển lên trên
     def moveup(self, step = 1):
-        self.y += step
+        self.x -= step
 
     #Di chuyển xuống
     def movedown(self, step = 1):
-        self.y -= step
+        self.x += step
 
     #Di chuyển sang trái
     def moveleft(self, step = 1):
-        self.x -= step
+        self.y -= step
 
     #Di chuyển sang phải
     def moveright(self, step = 1):
-        self.x += step
+        self.y += step
 
     def __eq__(self, other):
         return other != None and self.top(other)
 
     def __repr__(self):
-        return "%s(%d,%d)" % (self.name, self.x, self.y)
+        return "%s\t" % (self.name)
 
     def _toStringForTest(self):
         return self.name + "(" + str(self.x) + "," + str(self.y) + ")"
@@ -114,12 +125,12 @@ class Block:
             self.control = None
 
     def getCtrString(self):
-        ctr = "both"
+        ctr = " \t***BOTH***"
         if self.control == None:
-            ctr = "both"
+            ctr = " \t***BOTH***"
         elif self.control is self.A:
-            ctr = self.A.name
-        else: ctr = self.B.name
+            ctr = " ONLY ***" + self.A.name + "***"
+        else: ctr = " ONLY ***" + self.B.name + "***"
         return ctr
 
     def moveup(self):
@@ -203,6 +214,7 @@ class Block:
                     self.A.moveright(2)
                     self.B.moveright()
                 elif self.A.isRight(self.B):
+
                     self.A.moveright()
                     self.B.moveright(2)
                 else: #2 khối chồng nhau
@@ -223,7 +235,7 @@ class Block:
 
     def __eq__(self, other):
         """hai Block bằng nhau khi vị trí của các node bằng nhau"""
-        return self.A.top(other.A) and self.B.top(other.B)
+        return other != None and self.A == other.A and self.B == other.B
 
     def __repr__(self):
         return "[%s(%s %s]" % (self.getCtrString(), self.A, self.B)
@@ -234,7 +246,7 @@ class Block:
 class Point:
     """
     Điểm trên bản đồ\n
-    w: trọng số chịu tải khối lượng hiện tại.
+    w: khối lượng chịu được hiện tại.
     wBefore: trọng số chịu tải trước đó. Lưu nếu toggle sẽ restore lại
     """
     def __init__(self, w, wBefore = 2):
@@ -255,8 +267,11 @@ class Point:
     def isValid(self, w):
         return self.w >= w
 
+    def isGoal(self):
+        return False
+
     def __repr__(self):
-        return "%d\t\t" % (self.w)
+        return "%d\t" % (self.w)
 
 
 #Mô tả nút nhấn trên bản đồ (map)
@@ -281,29 +296,40 @@ class Button(Point):
     type: là 1 trong 4 loại được mô tả ở trên\n
     lsPoint: là danh sách các điểm mà nó có tác dụng.
     """
-    def __init__(self, type, w, lsPoint):
-        self.type = type
+    def __init__(self, typex, w, lsPoint):
+        self.type = typex
         self.lsPoint = lsPoint
         self.w = w
+
+    def isValid(self, w):
+        return True
 
     def enable(self, block):
         if block.weight() >= self.w:
             if self.type == TOGGLEBTN:
                 for i in self.lsPoint:
                     i.toggle()
+                return True
             elif self.type == SHOWBTN:
                 for i in self.lsPoint:
                     i.show()
+                return True
             elif self.type == HIDEBTN:
                 for i in self.lsPoint:
                     i.hide()
+                return True
             elif self.type == SPLITBTN:
                 block.split(self.lsPoint[0].x, self.lsPoint[0].y,
                             self.lsPoint[1].x, self.lsPoint[1].y,
                             block.seclectControl(self.lsPoint[0].x, self.lsPoint[0].y))
+<<<<<<< HEAD
 ##
+=======
+        return False
+
+>>>>>>> 966d35fd4ab24474a1ecd93a39e19cd2f23f129b
     def isGoal(self):
-        return type == GOAL
+        return self.type == GOAL
 
     def __repr__(self):
         return "%d(%s)\t" % (self.w, self.type)
@@ -318,8 +344,18 @@ class Map:
         self.col = col
         self.matrix = matrix
 
+    def cmpMatrix(self, other):
+        for i, j in zip(self.matrix, other.matrix):
+            if cmp(i, j) == False:
+                return False
+        return True
+
+    def __eq__(self, other):
+        return self.col == other.col and self.row == self.row \
+        and self.cmpMatrix(other)
+
     def __isOnMap(self, x, y):
-        return x >= 0 and y >= 0 and x < self.col and y < self.row
+        return x >= 0 and y >= 0 and x < self.row and y < self.col
 
     def isOnMap(self, block):
         return self.__isOnMap(block.A.x, block.A.y) and \
@@ -330,10 +366,17 @@ class Map:
         if self.isOnMap(block):
             A = block.A
             B = block.B
+<<<<<<< HEAD
             if type(self.matrix[A.x][A.y]) is Point and \
                self.matrix[A.x][A.y].isValid(block.weight()) and \
                type(self.matrix[B.x][B.y]) is Point and \
                 self.matrix[B.x][B.y].isValid(block.weight()):
+=======
+            atA = self.matrix[A.x][A.y]
+            atB = self.matrix[B.x][B.y]
+            
+            if atA.isValid(block.weight()) and atB.isValid(block.weight()):
+>>>>>>> 966d35fd4ab24474a1ecd93a39e19cd2f23f129b
                 return True
         return False
     def isGoal(self, block):
@@ -343,6 +386,7 @@ class Map:
     def enableButton(self, block):
         A = block.A
         B = block.B
+<<<<<<< HEAD
         if A.top(B) :
             if type(self.matrix[A.x][A.y]) is Button :
                 self.matrix[A.x][A.y].enable(block)
@@ -357,3 +401,37 @@ class Map:
 
 
 
+=======
+        checkerA = False
+        checkerB = False
+        try:
+            if A != B:
+                if isinstance(self.matrix[A.x][A.y], Button):
+                    checkerA = self.matrix[A.x][A.y].enable(block)
+                if isinstance(self.matrix[B.x][B.y],Button):
+                    checkerB = self.matrix[B.x][B.y].enable(block)
+            else:
+                if isinstance(self.matrix[A.x][A.y], Button):
+                    checkerA = self.matrix[A.x][A.y].enable(block)
+            return checkerA or checkerB
+        except IndexError:
+            return False
+
+    def __repr__(self, block = None):
+        if(block == None):
+            return "\n" + "".join("*" for i in range(50)) + "\n" + \
+             "\t\tMAP INFO\nName: %sSize: %i x %i\n" %(self.name, self.row, self.col) + \
+            "\n".join(str(i) for i in self.matrix) +\
+             "\n" + "".join("*" for i in range(50)) + "\n\n"
+        else:
+            mapWithBlock = deepcopy(self.matrix)
+            try:
+                if block.weight() == 1:
+                    mapWithBlock[block.A.x][block.A.y] = block.A
+                    mapWithBlock[block.B.x][block.B.y] = block.B
+                else: mapWithBlock[block.A.x][block.A.y] = Node(block.A.name + block.B.name, block.A.x, block.A.y)
+                
+            except IndexError:
+                print "Block is out of Map"
+            return "\n".join(str(i) for i in mapWithBlock)
+>>>>>>> 966d35fd4ab24474a1ecd93a39e19cd2f23f129b
