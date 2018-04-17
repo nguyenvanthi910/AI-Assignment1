@@ -38,13 +38,12 @@ class Block:
         self.control = control
     
     def split(self, pointA, pointB, control = 0):
+        '''Point A, Point B là vị trí sau khi spit với định dạng là array [row, col]'''
         xA, yA = pointA
         xB, yB = pointB
         if control == 0 or control == False or control == self.A:
             self.___split__(xA, yA, xB, yB, self.A)
         else: self.___split__(xA,yA,xB,yB, self.B)
-
-
 
     def setControl(self, row, col):
         if Node(row, col) == self.A: return self.A
