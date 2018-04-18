@@ -57,7 +57,6 @@ class Show(Button):
         self.weak = weak
         self.isEnable = isEnable
         self.lsShow = []
-        self.lsHide = []
         self.isBlur = False
         self.goal = False
         for i, j  in lsRC:
@@ -85,12 +84,11 @@ class Hide(Button):
         self.col = col
         self.weak = weak
         self.isEnable = isEnable
-        self.lsShow = []
         self.lsHide = []
         self.isBlur = False
         self.goal = False
-        for i, j  in lsRC:
-            self.lsHide.append([i,j,None])
+        for a  in lsRC:
+            self.lsHide.append(a.append(None))
     def enable(self, map):
         if not self.isEnable:
             map.change(self.lsHide)
@@ -111,12 +109,12 @@ class Hide(Button):
 class HideAndShow(Button):
     def __int__(self, row, col, weak, lsRCS, lsRCH, isEnable = False):
         self.show = Show(row, col, weak, lsRCS, isEnable)
-        self.hide = Show(row, col, weak, lsRCH, isEnable)
+        self.hide = Hide(row, col, weak, lsRCH, isEnable)
         self.isBlur = True
         self.goal = False
     def enable(self, map):
-        self.show.show(map)
-        self.hide.hide(map)
+        self.show.enable(map)
+        self.hide.enable(map)
     def canStand(self):
         return self.weak is not None  and self.isBlur == False
     def canLie(self):

@@ -7,7 +7,7 @@ class Tiles:
     before: để lưu giá trị trước đó để thực hiện chức năng show/hide/toggle
     isBlur: để lưu giá trị của giải thuật xác định miền của map, nếu đã bị blur
     thì block không thể qua được.'''
-    def __init__(self, isWeak = None, beforevalue = True):
+    def __init__(self, isWeak = None, beforevalue = False):
         if isWeak is 1:
             self.weak = True
         elif isWeak is 2:
@@ -20,15 +20,15 @@ class Tiles:
             self.before = False
         elif beforevalue is 2:
             self.before = True
-        else: beforevalue = beforevalue
+        else: self.before = beforevalue
         self.isBlur = False
     def canStand(self):
         return self.weak is not None and self.weak == False and self.isBlur == False
     def canLie(self):
         return self.weak is not None and self.isBlur == False
-    def show(self):
-        self.weak = None
     def hide(self):
+        self.weak = None
+    def show(self):
         self.weak = self.before
     def isShow(self):
         return self.before == self.weak
@@ -62,15 +62,15 @@ class Goal(Tiles):
             self.before = False
         elif beforevalue is 2:
             self.before = True
-        else: beforevalue = beforevalue
+        else: self.before = beforevalue
         self.isBlur = False
     def canStand(self):
         return self.weak is not None and self.weak == False and self.isBlur == False
     def canLie(self):
         return self.weak is not None and self.isBlur == False
-    def show(self):
-        self.weak = None
     def hide(self):
+        self.weak = None
+    def show(self):
         self.weak = self.before
     def isShow(self):
         return self.before == self.weak
@@ -129,11 +129,11 @@ class Map:
                 print("Error in changeTiles " + str(lsTiles))
 
     def setBlur(self, row, col):
-        if row < 0 or col < 0 or row > self.row or col > self.col:
+        if row >= 0 and col >= 0 and row < self.row and col < self.col:
             self.matrix[row][col].setBlur()
 
     def resetBlur(self, row, col):
-        if row < 0 or col < 0 or row > self.row or col > self.col:
+        if row >= 0 and col >= 0 and row < self.row and col < self.col:
             self.matrix[row][col].resetBlur()
 
     def __repr__(self): return "\n".join(str(i) for i in self.matrix)
