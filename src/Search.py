@@ -1,4 +1,7 @@
-from utils import *
+try:
+    from utils import *
+except ImportError:
+    from src.utils import *
 class Problem(object):
     def __init__(self, init, goal = None):
         self.init = init
