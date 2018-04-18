@@ -31,6 +31,8 @@ def readFrom(filename):
     <Danh sách tọa độ>
     EN
     <Danh sách tọa độ>
+    LSGOAL
+    <Danh sach toa do>
     """
     try:
         file = open(f + filename, mode='r')
@@ -41,6 +43,7 @@ def readFrom(filename):
     r, c = [int(x) for x in next(file).split()]
     matrix = list()
     blockarr = []
+    goararr = []
     isMatrix = True
     for line in file:
         if line.startswith("###"): isMatrix = False
@@ -51,7 +54,7 @@ def readFrom(filename):
             tmp.pop(0)
             w, x, y = [int(i) for i in tmp]
             nextline = [int(k) for k in next(file).split()]
-            sh = Elements.Button(Elements.SHOWBTN, w, [])
+            sh = Elements.Button(Elements.SHOWBTN, w, [], x, y)
             for i, j in pairwise(nextline):
                 sh.lsPoint.append(matrix[i][j])
             matrix[x][y] = sh
@@ -60,7 +63,7 @@ def readFrom(filename):
             tmp.pop(0)
             w, x, y = [int(i) for i in tmp]
             nextline = [int(k) for k in next(file).split()]
-            sh = Elements.Button(Elements.HIDEBTN, w, [])
+            sh = Elements.Button(Elements.HIDEBTN, w, [], x, y)
             for i, j in pairwise(nextline):
                 sh.lsPoint.append(matrix[i][j])
             matrix[x][y] = sh
@@ -69,7 +72,7 @@ def readFrom(filename):
             tmp.pop(0)
             w, x, y = [int(i) for i in tmp]
             nextline = [int(k) for k in next(file).split()]
-            sh = Elements.Button(Elements.TOGGLEBTN, w, [])
+            sh = Elements.Button(Elements.TOGGLEBTN, w, [], x, y)
             for i, j in pairwise(nextline):
                 sh.lsPoint.append(matrix[i][j])
             matrix[x][y] = sh
@@ -78,20 +81,25 @@ def readFrom(filename):
             tmp.pop(0)
             w, x, y = [int(i) for i in tmp]
             nextline = [int(k) for k in next(file).split()]
-            sh = Elements.Button(Elements.SPLITBTN, w, [])
+            sh = Elements.Button(Elements.SPLITBTN, w, [], x, y)
             for i, j in pairwise(nextline):
                 sh.lsPoint.append(matrix[i][j])
             matrix[x][y] = sh
         elif line.startswith("EN"):#GOAL
             nextline = [int(k) for k in next(file).split()]
             for i, j in pairwise(nextline):
-                matrix[i][j] = Elements.Button(Elements.GOAL, 3, [])
+                matrix[i][j] = Elements.Button(Elements.GOAL, 3, [], i, j)
         elif line.startswith("IN"):#Init Block
             blockarr = [int(x) for x in next(file).split()]
+        elif line.startswith("LSGOAL"):
+            goararr = [int(x) for x in next(file).split()]
 
     map = Elements.Map(name, r, c, matrix)
+
     a = Elements.Node("A", blockarr[0], blockarr[1])
     b = Elements.Node("B", blockarr[2], blockarr[3])
     block = Elements.Block(a, b, a)
+
+    goararr = pairwise(goararr)
     file.close()
-    return (map, block)
+    return (map, block, goararr)

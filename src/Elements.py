@@ -117,12 +117,12 @@ class Block:
             self.control = None
 
     def getCtrString(self):
-        ctr = " \t***BOTH***"
+        ctr = " (BOTH) "
         if self.control == None:
-            ctr = " \t***BOTH***"
+            ctr = " (BOTH) "
         elif self.control is self.A:
-            ctr = " ONLY ***" + self.A.name + "***"
-        else: ctr = " ONLY ***" + self.B.name + "***"
+            ctr = " (ONLY " + self.A.name + ")"
+        else: ctr = " ONLY(" + self.B.name + ") "
         return ctr
 
     def moveup(self):
@@ -262,6 +262,9 @@ class Point:
     def isGoal(self):
         return False
 
+    def enable(self, block):
+        return False
+
     def __repr__(self):
         return "%d\t" % (self.w)
 
@@ -288,19 +291,23 @@ class Button(Point):
     type: là 1 trong 4 loại được mô tả ở trên\n
     lsPoint: là danh sách các điểm mà nó có tác dụng.
     """
-    def __init__(self, typex, w, lsPoint):
+    def __init__(self, typex, w, lsPoint, x, y):
+        self.x = x
+        self.y = y
         self.type = typex
         self.lsPoint = lsPoint
         self.w = w
+        self.blur = False
 
     def isValid(self, w):
-        return True
+        return self.blur == False
 
     def enable(self, block):
-        if block.weight() == self.w:
+        if (block.weight() == 2 and  self.w == 2) or self.w == 1:
             if self.type == TOGGLEBTN:
                 for i in self.lsPoint:
                     i.toggle()
+          #      self.blur = True
                 return True
             elif self.type == SHOWBTN:
                 for i in self.lsPoint:
@@ -332,37 +339,25 @@ class Map:
         self.col = col
         self.matrix = matrix
 
-    def cmpMatrix(self, other):
-        for i, j in zip(self.matrix, other.matrix):
-            if cmp(i, j) == False:
-                return False
-        return True
 
     def __eq__(self, other):
         return self.col == other.col and self.row == self.row \
-        and self.cmpMatrix(other)
-
-    def __isOnMap(self, x, y):
-        return x >= 0 and y >= 0 and x < self.row and y < self.col
-
-    def isOnMap(self, block):
-        return self.__isOnMap(block.A.x, block.A.y) and \
-               self.__isOnMap(block.B.x, block.B.y)
-
+        and self.matrix == other.matrix
 
     def isValid(self, block):
-        if self.isOnMap(block):
+        try:
             A = block.A
             B = block.B
+            if A.x < 0 or A.y < 0 or B.x < 0 or B.y < 0: return False
             atA = self.matrix[A.x][A.y]
-            atB = self.matrix[B.x][B.y]
-            
-            if atA.isValid(block.weight()) and atB.isValid(block.weight()):
-                return True
-        return False
+            atB = self.matrix[B.x][B.y]    
+            return atA.isValid(block.weight()) and atB.isValid(block.weight())
+        except IndexError: return False
     def isGoal(self, block):
-        A = block.A
-        return block.weight() == 2 and self.matrix[A.x][A.y].isGoal()
+        try:
+            A = block.A
+            return block.weight() == 2 and self.matrix[A.x][A.y].isGoal()
+        except IndexError: return False
 
     def enableButton(self, block):
         A = block.A
@@ -371,16 +366,18 @@ class Map:
         checkerB = False
         try:
             if A != B:
-                if isinstance(self.matrix[A.x][A.y], Button):
-                    checkerA = self.matrix[A.x][A.y].enable(block)
-                if isinstance(self.matrix[B.x][B.y],Button):
-                    checkerB = self.matrix[B.x][B.y].enable(block)
+                checkerA = self.matrix[A.x][A.y].enable(block)
+                checkerB = self.matrix[B.x][B.y].enable(block)
             else:
-                if isinstance(self.matrix[A.x][A.y], Button):
-                    checkerA = self.matrix[A.x][A.y].enable(block)
+                checkerA = self.matrix[A.x][A.y].enable(block)
             return checkerA or checkerB
         except IndexError:
             return False
+
+    def getElement(self, row, col):
+        try: return self.matrix[row][col]
+        except IndexError:
+            return None
 
     def __repr__(self, block = None):
         if(block == None):
@@ -397,5 +394,5 @@ class Map:
                 else: mapWithBlock[block.A.x][block.A.y] = Node(block.A.name + block.B.name, block.A.x, block.A.y)
                 
             except IndexError:
-                print "Block is out of Map"
+                print("Block is out of Map")
             return "\n".join(str(i) for i in mapWithBlock)
