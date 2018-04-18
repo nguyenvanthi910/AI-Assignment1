@@ -15,7 +15,7 @@ mapweb = "../maps/web/"
 def get_testcase(i): return testcase + str(i)
 def get_web_map(i): return mapweb + str(i)
 
-map, block = file.readFrom(get_web_map(2))
+map, block = file.readFrom(get_web_map(1))
 
 <<<<<<< HEAD
 print(map.matrix[block.A.x][block.A.y])
