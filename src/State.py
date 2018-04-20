@@ -59,9 +59,9 @@ class State():
         return self.getMap().isValid(self.block)
 
     def __cp__(self, g):
-        A = self.block.A
-        B = self.block.B
-        return (g.x == A.x and g.y == A.y) or (g.x == B.x and g.y == B.y)
+    	A = self.block.A
+    	B = self.block.B
+    	return (g.x == A.x and g.y == A.y) or (g.x == B.x and g.y == B.y)
 
     def isGoal(self):
         if(self.getMap().isGoal(self.block)): return [True, None]

@@ -318,9 +318,9 @@ class Button(Point):
                     i.hide()
                 return True
             elif self.type == SPLITBTN:
-                block.split(self.lsPoint[0].x, self.lsPoint[0].y,
-                            self.lsPoint[1].x, self.lsPoint[1].y,
-                            block.seclectControl(self.lsPoint[0].x, self.lsPoint[0].y))
+                block.split(self.lsPoint[0][0], self.lsPoint[0][1],
+                            self.lsPoint[1][0], self.lsPoint[1][1],
+                            block.seclectControl(self.lsPoint[0][0], self.lsPoint[0][1]))
         return False
 
     def isGoal(self):
