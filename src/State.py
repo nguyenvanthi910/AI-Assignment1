@@ -2,11 +2,14 @@
 # -*- coding: utf-8 -*-
 from copy import deepcopy
 try:
-	from src import Elements
-	import src.FileHandler as file
+    from State import *
+    import FileHandler as file
 except ImportError:
-	import Elements
-	import FileHandler as file
+    from src.State import  *
+    import src.FileHandler as file
+import time
+import curses
+
 
 
 
@@ -17,25 +20,26 @@ def get_web_map(i): return mapweb + str(i)
 
 
 
-def getLsGoal():
+def getLsGoal(ls, map):
     lsGoal = []
     for i, j in ls:
         lsGoal.append(map.getElement(i, j))
     return lsGoal
 
-UP = " ---> UP "
-DOWN = " ---> DOWN "
-LEFT = " ---> LEFT "
-RIGHT = " ---> RIGHT "
+UP = " --> U "
+DOWN = " --> D "
+LEFT = " --> L "
+RIGHT = " --> R "
 
 class State():
     "Trạng thái của trò chơi"
-    def __init__(self, block ,map = None, mapChanged = False):
+    def __init__(self, block ,value = 1,map = None, mapChanged = False):
         self.block = block
         self.parent = None
         self.move = None
         self.lsGoal = None
         self.map = map
+        self.value = value
         self.mapChanged = mapChanged
 
     def getMap(self):
@@ -59,9 +63,9 @@ class State():
         return self.getMap().isValid(self.block)
 
     def __cp__(self, g):
-    	A = self.block.A
-    	B = self.block.B
-    	return (g.x == A.x and g.y == A.y) or (g.x == B.x and g.y == B.y)
+        A = self.block.A
+        B = self.block.B
+        return (g.x == A.x and g.y == A.y) or (g.x == B.x and g.y == B.y)
 
     def isGoal(self):
         if(self.getMap().isGoal(self.block)): return [True, None]
@@ -77,8 +81,7 @@ class State():
         return self.block == other.block and self.getMap() == other.getMap()
 
     def __repr__(self):
-        return str(self.move) + "\n" + str(self.getMap().__repr__(self.block)) + "\n" +\
-          "\n".join("\t\t\t||" for i in range(2)) + "\n\t\t\t\\/\n"
+        return str(self.move) + "\r" + str(self.getMap().__repr__(self.block)) + "\r"
     def shortSol(self):
         return str(self.move)
 
@@ -116,7 +119,7 @@ def nextState(current):
             elif i - 4 == 3:
                 mv = RIGHT + newblock.getCtrString()
                 newblock.moveright()
-        newstate = State(newblock)
+        newstate = State(newblock, current.value + 1)
         newstate.move = mv
         newstate.lsGoal = current.lsGoal
         newstate.parent = current
@@ -137,29 +140,43 @@ def breadth_first_search(initState):
         if check == True:
             queue.clear()
             explored.clear()
-            printShortSolution(state)
             if value == None:
-                printSolution(state)
+                print(initState)
                 printShortSolution(state)
+                print("\n\nMove %d steps\n" % state.value)
                 print("Explored %d states\n\n" % counter)
-                return
+                return state
         explored.append(state)
         children = nextState(state)
         for i in children:
             if i not in explored:
                 queue.append(i)
 
-def printSolution(state):
-    root = []
-    root.append(state)
-    parent = state.parent
-    while parent:
-        root.append(parent)
-        parent = parent.parent
-
-    root = reversed(root)
-    for i,t in enumerate(root):
-        print(str(i) + '\t' + str(t))
+def depth_first_search(initState, maxdepth = 10):
+    counter = 0
+    stack = list()
+    explored = list()
+    stack.append(initState)
+    while stack:
+        state = stack.pop()
+        check, value = state.isGoal()
+        counter += 1
+        if check == True:
+            if value == None:
+                print(initState)
+                printShortSolution(state)
+                print("\n\nMove %d steps\n" % state.value)
+                print("Explored %d states\n\n" % counter)
+                return state
+        explored.append(state)
+        if state.value > maxdepth:
+            continue
+        children = nextState(state)
+        for i in children:
+            if i not in explored:
+                stack.append(i)
+    print("Don't have any solutions.")
+    return initState
 
 def printShortSolution(state):
     root = []
@@ -177,21 +194,4 @@ def printShortSolution(state):
         else: result += str(k.shortSol()) + "\n"
     print(result)
 
-if __name__ == '__main__':
-    m = '1'
-    m = input("Input level: ")
-    while(m != 'q'):
-        try:
-            map, block, ls = file.readFrom(get_web_map(int(m)))
 
-            initState = State(block, map, True)
-            initState.lsGoal = getLsGoal()
-
-            print(map)
-
-            breadth_first_search(initState)
-
-            m = input("Input another level (q for quit): ")
-        except Exception as e:
-            print(e)
-            m = input("This level is error. Choose another level(q for quit): ")

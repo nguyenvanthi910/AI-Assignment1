@@ -64,8 +64,11 @@ class Node:
     def __eq__(self, other):
         return other != None and self.top(other)
 
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def __repr__(self):
-        return "%s\t" % (self.name)
+        return " %s " % (self.name)
 
     def _toStringForTest(self):
         return self.name + "(" + str(self.x) + "," + str(self.y) + ")"
@@ -119,10 +122,10 @@ class Block:
     def getCtrString(self):
         ctr = " (BOTH) "
         if self.control == None:
-            ctr = " (BOTH) "
+            ctr = "(2)"
         elif self.control is self.A:
-            ctr = " (ONLY " + self.A.name + ")"
-        else: ctr = " ONLY(" + self.B.name + ") "
+            ctr = "(" + self.A.name + ")"
+        else: ctr = "(" + self.B.name + ")"
         return ctr
 
     def moveup(self):
@@ -229,6 +232,9 @@ class Block:
         """hai Block bằng nhau khi vị trí của các node bằng nhau"""
         return other != None and self.A == other.A and self.B == other.B
 
+    def __ne__(self, other):
+        return self.__eq__(other)
+
     def __repr__(self):
         return "[%s(%s %s]" % (self.getCtrString(), self.A, self.B)
 
@@ -266,7 +272,10 @@ class Point:
         return False
 
     def __repr__(self):
-        return "%d\t" % (self.w)
+        """return "%d\t" % (self.w)"""
+        if self.w == 0: return "   "
+        elif self.w == 1: return " - "
+        else: return " = "
 
 
 #Mô tả nút nhấn trên bản đồ (map)
@@ -327,7 +336,12 @@ class Button(Point):
         return self.type == GOAL
 
     def __repr__(self):
-        return "%d(%s)\t" % (self.w, self.type)
+        """return "%d(%s)\t" % (self.w, self.type)"""
+        if self.type == TOGGLEBTN: return "|O|"
+        elif self.type == SHOWBTN: return "|O|"
+        elif self.type == HIDEBTN: return "|X|"
+        elif self.type == SPLITBTN: return "|@|"
+        else: return "|*|"
 
 class Map:
     """
@@ -380,19 +394,28 @@ class Map:
             return None
 
     def __repr__(self, block = None):
+
         if(block == None):
-            return "\n" + "".join("*" for i in range(50)) + "\n" + \
-             "\t\tMAP INFO\nName: %sSize: %i x %i\n" %(self.name, self.row, self.col) + \
-            "\n".join(str(i) for i in self.matrix) +\
-             "\n" + "".join("*" for i in range(50)) + "\n\n"
+            result = ""
+            for i in self.matrix:
+                for j in i:
+                    result += str(j)
+                result += "\n"
+            return result
         else:
             mapWithBlock = deepcopy(self.matrix)
             try:
                 if block.weight() == 1:
                     mapWithBlock[block.A.x][block.A.y] = block.A
                     mapWithBlock[block.B.x][block.B.y] = block.B
-                else: mapWithBlock[block.A.x][block.A.y] = Node(block.A.name + block.B.name, block.A.x, block.A.y)
+                else: mapWithBlock[block.A.x][block.A.y] = Node( "#", block.A.x, block.A.y)
                 
             except IndexError:
                 print("Block is out of Map")
-            return "\n".join(str(i) for i in mapWithBlock)
+            result = ""
+            for i in mapWithBlock:
+                for j in i:
+                    result += str(j)
+                result += "\n"
+            return result
+            
