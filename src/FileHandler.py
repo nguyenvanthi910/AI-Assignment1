@@ -83,7 +83,7 @@ def readFrom(filename):
             nextline = [int(k) for k in next(file).split()]
             sh = Elements.Button(Elements.SPLITBTN, w, [], x, y)
             for i, j in pairwise(nextline):
-                sh.lsPoint.append(matrix[i][j])
+                sh.lsPoint.append([i, j])
             matrix[x][y] = sh
         elif line.startswith("EN"):#GOAL
             nextline = [int(k) for k in next(file).split()]
