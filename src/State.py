@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 from copy import deepcopy
 try:
-    from State import *
+    from Elements import *
     import FileHandler as file
 except ImportError:
-    from src.State import  *
+    from src.Elements import  *
     import src.FileHandler as file
 import time
 import curses
@@ -146,6 +146,8 @@ def breadth_first_search(initState):
                 print("\n\nMove %d steps\n" % state.value)
                 print("Explored %d states\n\n" % counter)
                 return state
+            else:
+                print("Passed: " + str(value))
         explored.append(state)
         children = nextState(state)
         for i in children:

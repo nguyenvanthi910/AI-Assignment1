@@ -72,37 +72,36 @@ Hiện thực solution cho game block and hole
     Cố gắng tìm ra hàm lượng giá để áp dụng heuristic
 
 
-Game code:
-1. 780464
-2. 290299
-3. 918660
-4. 520967
-5. 028431
-6. 524383
-7. 189493
-8. 499707
-9. 074355
-10. 300590
-11. 291709
-12. 958640
-13. 448106
-14. 210362
-15. 098598
-16. 000241
-17. 003596
-18. 284933
-19. 119785
-20. 543019
-21. 728724
-22. 987319
-23. 293486
-24. 088198
-25. 250453
-26. 426429
-27. 660141
-28. 769721
-29. 
-30. 
-31. 
-32.
-33. 
+Level 01 - code : 780464    <1s
+Level 02 - code : 290299    10s
+Level 03 - code : 918660    1s
+Level 04 - code : 520967    1s
+Level 05 - code : 028431    8s
+Level 06 - code : 524383    2s
+Level 07 - code : 189493    10s
+Level 08 - code : 499707    fail
+Level 09 - code : 074355    fail
+Level 10 - code : 300590    fail
+Level 11 - code : 291709    <1s
+Level 12 - code : 958640    7s
+Level 13 - code : 448106    2s
+Level 14 - code : 210362    12s
+Level 15 - code : 098598    fail
+Level 16 - code : 000241    fail
+Level 17 - code : 683596
+Level 18 - code : 284933
+Level 19 - code : 119785
+Level 20 - code : 543019
+Level 21 - code : 728724
+Level 22 - code : 987319
+Level 23 - code : 293486
+Level 24 - code : 088198
+Level 25 - code : 250453
+Level 26 - code : 426329
+Level 27 - code : 660141
+Level 28 - code : 769721
+Level 29 - code : 691859
+Level 30 - code : 280351
+Level 31 - code : 138620
+Level 32 - code : 879021
+Level 33 - code : 614955

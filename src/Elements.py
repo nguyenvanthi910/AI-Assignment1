@@ -230,10 +230,11 @@ class Block:
 
     def __eq__(self, other):
         """hai Block bằng nhau khi vị trí của các node bằng nhau"""
-        return other != None and self.A == other.A and self.B == other.B
+        return other != None and ((self.A == other.A and self.B == other.B) or \
+                                  (self.A == other.B and self.B == other.A))
 
     def __ne__(self, other):
-        return self.__eq__(other)
+        return not self.__eq__(other)
 
     def __repr__(self):
         return "[%s(%s %s]" % (self.getCtrString(), self.A, self.B)
@@ -247,9 +248,12 @@ class Point:
     w: khối lượng chịu được hiện tại.
     wBefore: trọng số chịu tải trước đó. Lưu nếu toggle sẽ restore lại
     """
-    def __init__(self, w, wBefore = 2):
+    def __init__(self, w, x, y, wBefore = 2):
         self.w = w
+        self.x = x
+        self.y = y
         self.wBefore = wBefore
+        self.ig = False
 
     def toggle(self):
         if self.w == self.wBefore:
@@ -263,7 +267,7 @@ class Point:
         self.w = self.wBefore
 
     def isValid(self, w):
-        return self.w >= w
+        return self.w >= w and not self.ig
 
     def isGoal(self):
         return False
@@ -306,17 +310,16 @@ class Button(Point):
         self.type = typex
         self.lsPoint = lsPoint
         self.w = w
-        self.blur = False
+        self.ig = False
 
     def isValid(self, w):
-        return self.blur == False
+        return self.ig == False
 
     def enable(self, block):
         if (block.weight() == 2 and  self.w == 2) or self.w == 1:
             if self.type == TOGGLEBTN:
                 for i in self.lsPoint:
                     i.toggle()
-          #      self.blur = True
                 return True
             elif self.type == SHOWBTN:
                 for i in self.lsPoint:
@@ -337,11 +340,17 @@ class Button(Point):
 
     def __repr__(self):
         """return "%d(%s)\t" % (self.w, self.type)"""
-        if self.type == TOGGLEBTN: return "|O|"
-        elif self.type == SHOWBTN: return "|O|"
-        elif self.type == HIDEBTN: return "|X|"
+        if self.type == TOGGLEBTN:
+            if self.w == 1: return "|O|"
+            else: return "|X|"
+        elif self.type == SHOWBTN:
+            if self.w == 1: return "|O|"
+            else: return "|X|"
+        elif self.type == HIDEBTN:
+            if self.w == 1: return "|O|"
+            else: return "|X|"
         elif self.type == SPLITBTN: return "|@|"
-        else: return "|*|"
+        else: return "[+]"
 
 class Map:
     """
@@ -418,4 +427,3 @@ class Map:
                     result += str(j)
                 result += "\n"
             return result
-            

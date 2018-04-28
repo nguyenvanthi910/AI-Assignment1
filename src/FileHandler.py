@@ -33,6 +33,8 @@ def readFrom(filename):
     <Danh sách tọa độ>
     LSGOAL
     <Danh sach toa do>
+    IG
+    <danh sach toa do>
     """
     try:
         file = open(f + filename, mode='r')
@@ -45,10 +47,12 @@ def readFrom(filename):
     blockarr = []
     goararr = []
     isMatrix = True
+    row = 0
     for line in file:
         if line.startswith("###"): isMatrix = False
         if isMatrix:
-            matrix.append([Elements.Point(int(x)) for x in line.split()])
+            matrix.append([Elements.Point(int(x), row, i) for i, x in enumerate(line.split())])
+            row += 1
         elif line.startswith("SH"):#Show
             tmp = line.split()
             tmp.pop(0)
@@ -93,6 +97,10 @@ def readFrom(filename):
             blockarr = [int(x) for x in next(file).split()]
         elif line.startswith("LSGOAL"):
             goararr = [int(x) for x in next(file).split()]
+        elif line.startswith("IG"):
+            nextline = [int(k) for k in next(file).split()]
+            for i, j in pairwise(nextline):
+                matrix[i][j].ig = True
 
     map = Elements.Map(name, r, c, matrix)
 
