@@ -297,6 +297,7 @@ SHOWBTN = 'SH'
 HIDEBTN = 'HI'
 SPLITBTN = 'SP'
 GOAL = 'GL'
+SHOWANDHIDE = "SHHD"
 
 class Button(Point):
     """
@@ -309,14 +310,18 @@ class Button(Point):
         self.y = y
         self.type = typex
         self.lsPoint = lsPoint
+        self.lsHide = []
         self.w = w
         self.ig = False
+        self.autoIg = False
 
     def isValid(self, w):
         return self.ig == False
 
     def enable(self, block):
         if (block.weight() == 2 and  self.w == 2) or self.w == 1:
+            if self.autoIg:
+                self.ig = True
             if self.type == TOGGLEBTN:
                 for i in self.lsPoint:
                     i.toggle()
@@ -333,6 +338,12 @@ class Button(Point):
                 block.split(self.lsPoint[0][0], self.lsPoint[0][1],
                             self.lsPoint[1][0], self.lsPoint[1][1],
                             block.seclectControl(self.lsPoint[0][0], self.lsPoint[0][1]))
+            elif self.type == SHOWANDHIDE:
+                for i in self.lsPoint:
+                    i.show()
+                for i in self.lsHide:
+                    i.hide()
+                return True
         return False
 
     def isGoal(self):
@@ -340,13 +351,10 @@ class Button(Point):
 
     def __repr__(self):
         """return "%d(%s)\t" % (self.w, self.type)"""
-        if self.type == TOGGLEBTN:
-            if self.w == 1: return "|O|"
-            else: return "|X|"
-        elif self.type == SHOWBTN:
-            if self.w == 1: return "|O|"
-            else: return "|X|"
-        elif self.type == HIDEBTN:
+        if self.type == TOGGLEBTN \
+                or self.type == SHOWBTN \
+                or self.type == HIDEBTN \
+                or self.type == SHOWANDHIDE:
             if self.w == 1: return "|O|"
             else: return "|X|"
         elif self.type == SPLITBTN: return "|@|"

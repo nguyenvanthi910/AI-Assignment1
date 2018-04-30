@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
+import sys
 try:
 	from src import Elements
 except ImportError:
@@ -31,10 +32,13 @@ def readFrom(filename):
     <Danh sách tọa độ>
     EN
     <Danh sách tọa độ>
-    LSGOAL
+    LSGOAL A/B          neu A la goal cho A tuong tu cho B, trong la danh cho ca 2
     <Danh sach toa do>
-    IG
+    IG 1/0                 #1 is autoIg and 0 is not
     <danh sach toa do>
+    S&H w x y
+    <danh sach toa do show>
+    <danh sach toa do hide>
     """
     try:
         file = open(f + filename, mode='r')
@@ -46,6 +50,8 @@ def readFrom(filename):
     matrix = list()
     blockarr = []
     goararr = []
+    goala = []
+    goalb = []
     isMatrix = True
     row = 0
     for line in file:
@@ -96,18 +102,41 @@ def readFrom(filename):
         elif line.startswith("IN"):#Init Block
             blockarr = [int(x) for x in next(file).split()]
         elif line.startswith("LSGOAL"):
-            goararr = [int(x) for x in next(file).split()]
+            tmp = line.split()
+            if len(tmp) == 1:
+                goararr = [int(x) for x in next(file).split()]
+            else:
+                if tmp[1] == 'A':
+                    goala = [int(x) for x in next(file).split()]
+                elif tmp[1] == 'B':
+                    goalb = [int(x) for x in next(file).split()]
         elif line.startswith("IG"):
+            tmp = line.split()
             nextline = [int(k) for k in next(file).split()]
             for i, j in pairwise(nextline):
-                matrix[i][j].ig = True
+                if len(tmp) == 2 and tmp[1] == "1":
+                    matrix[i][j].autoIg = False
+                else: matrix[i][j].ig = True
+        elif line.startswith("S&H"):
+            tmp = line.split()
+            tmp.pop(0)
+            w, x, y = [int(i) for i in tmp]
+            nextline = [int(k) for k in next(file).split()]
+            nextline1 = [int(k) for k in next(file).split()]
+            sh = Elements.Button(Elements.SHOWANDHIDE, w, [], x, y)
+            for i, j in pairwise(nextline):
+                sh.lsPoint.append(matrix[i][j])
+            for i , j in pairwise(nextline1):
+                sh.lsHide.append(matrix[i][j])
+            matrix[x][y] = sh
 
     map = Elements.Map(name, r, c, matrix)
 
     a = Elements.Node("A", blockarr[0], blockarr[1])
     b = Elements.Node("B", blockarr[2], blockarr[3])
     block = Elements.Block(a, b, a)
-
+    goala = pairwise(goala)
+    goalb = pairwise(goalb)
     goararr = pairwise(goararr)
     file.close()
-    return (map, block, goararr)
+    return (map, block, goararr, goala, goalb)

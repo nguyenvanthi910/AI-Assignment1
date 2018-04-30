@@ -46,10 +46,14 @@ if __name__ == '__main__':
     m = input("Input level: ")
     while(m != 'q'):
         try:
-            map, block, ls = file.readFrom(get_web_map(int(m)))
+            map, block, ls, goalA, goalB = file.readFrom(get_web_map(int(m)))
 
-            initState = State(block, 1, map, True)
+            initState = State(block, 0, map, True)
             initState.lsGoal = getLsGoal(ls, map)
+            if goalA:
+                initState.goalA = goalA
+            if goalB:
+                initState.goalB = goalB
             t = "1"
             print("\nALGORITHM LIST:\n\t1. Breadth first search\n\t2. Depth first search\n\t3....\r")
             t = input("Please input algorithm(default 1):")

@@ -72,35 +72,35 @@ Hiện thực solution cho game block and hole
     Cố gắng tìm ra hàm lượng giá để áp dụng heuristic
 
 
-Level 01 - code : 780464    <1s
-Level 02 - code : 290299    10s
-Level 03 - code : 918660    1s
-Level 04 - code : 520967    1s
-Level 05 - code : 028431    8s
-Level 06 - code : 524383    2s
-Level 07 - code : 189493    10s
+Level 01 - code : 780464    v
+Level 02 - code : 290299    v
+Level 03 - code : 918660    v
+Level 04 - code : 520967    v
+Level 05 - code : 028431    v
+Level 06 - code : 524383    v
+Level 07 - code : 189493    v
 Level 08 - code : 499707    fail
 Level 09 - code : 074355    fail
 Level 10 - code : 300590    fail
-Level 11 - code : 291709    <1s
-Level 12 - code : 958640    7s
-Level 13 - code : 448106    2s
-Level 14 - code : 210362    12s
+Level 11 - code : 291709    v
+Level 12 - code : 958640    v
+Level 13 - code : 448106    v
+Level 14 - code : 210362    v
 Level 15 - code : 098598    fail
 Level 16 - code : 000241    fail
-Level 17 - code : 683596
-Level 18 - code : 284933
-Level 19 - code : 119785
-Level 20 - code : 543019
-Level 21 - code : 728724
-Level 22 - code : 987319
-Level 23 - code : 293486
-Level 24 - code : 088198
-Level 25 - code : 250453
-Level 26 - code : 426329
-Level 27 - code : 660141
-Level 28 - code : 769721
-Level 29 - code : 691859
+Level 17 - code : 683596    v
+Level 18 - code : 284933    v
+Level 19 - code : 119785    v
+Level 20 - code : 543019    fail
+Level 21 - code : 728724    v
+Level 22 - code : 987319    v
+Level 23 - code : 293486    fail
+Level 24 - code : 088198    fail
+Level 25 - code : 250453    v
+Level 26 - code : 426329    fail
+Level 27 - code : 660141    v
+Level 28 - code : 769721    fail
+Level 29 - code : 691859    fail
 Level 30 - code : 280351
 Level 31 - code : 138620
 Level 32 - code : 879021

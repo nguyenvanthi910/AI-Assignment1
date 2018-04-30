@@ -1,17 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from copy import deepcopy
+
 try:
     from Elements import *
     import FileHandler as file
 except ImportError:
     from src.Elements import  *
     import src.FileHandler as file
-import time
-import curses
-
-
-
 
 testcase = "../testcase/"
 mapweb = "../maps/web/"
@@ -33,7 +28,7 @@ RIGHT = " --> R "
 
 class State():
     "Trạng thái của trò chơi"
-    def __init__(self, block ,value = 1,map = None, mapChanged = False):
+    def __init__(self, block ,value = 0,map = None, mapChanged = False):
         self.block = block
         self.parent = None
         self.move = None
@@ -41,6 +36,8 @@ class State():
         self.map = map
         self.value = value
         self.mapChanged = mapChanged
+        self.goalA = None
+        self.goalB = None
 
     def getMap(self):
         if(self.mapChanged == True):
@@ -69,13 +66,34 @@ class State():
 
     def isGoal(self):
         if(self.getMap().isGoal(self.block)): return [True, None]
-        if not self.lsGoal: return [True, None]
-        g = self.lsGoal[0]
-        if g.w <= self.block.weight() and self.__cp__(g):
-            self.lsGoal.pop(0)
-            return [True, g]
-        else: return [False, g]
-
+        if self.block.control == None:
+            if not self.lsGoal: return [True, None]
+            g = self.lsGoal[0]
+            if g.w <= self.block.weight() and self.__cp__(g):
+                self.lsGoal.pop(0)
+                return [True, g]
+            else: return [False, g]
+        else:
+            if self.block.control == self.block.A:
+                if self.goalA == None:
+                    self.block.changeControl()
+                    return [True, "A"]
+                x, y = self.goalA[0]
+                A = self.block.A
+                if A.x == x and A.y == y:
+                    self.goalA.pop(0)
+                    return [True, [x,y]]
+                else: return [False, [x, y]]
+            else:
+                if self.goalB == None:
+                    self.block.changeControl()
+                    return [True, "B"]
+                x, y = self.goalB[0]
+                B = self.block.B
+                if B.x == x and B.y == y:
+                    self.goalB.pop(0)
+                    return [True, [x, y]]
+                else: return [False, [x,y]]
 
     def __eq__(self, other):
         return self.block == other.block and self.getMap() == other.getMap()
@@ -148,11 +166,14 @@ def breadth_first_search(initState):
                 return state
             else:
                 print("Passed: " + str(value))
+                print(state)
         explored.append(state)
         children = nextState(state)
         for i in children:
             if i not in explored:
                 queue.append(i)
+    print("Solution not found.")
+    return initState
 
 def depth_first_search(initState, maxdepth = 10):
     counter = 0
@@ -196,4 +217,37 @@ def printShortSolution(state):
         else: result += str(k.shortSol()) + "\n"
     print(result)
 
+if __name__ == '__main__':
+    m = '1'
+    m = input("Input level: ")
+    while(m != 'q'):
+        try:
+            map, block, ls, goalA, goalB = file.readFrom(get_web_map(int(m)))
+
+            initState = State(block, 0, map, True)
+            initState.lsGoal = getLsGoal(ls, map)
+            if goalA:
+                initState.goalA = goalA
+            if goalB:
+                initState.goalB = goalB
+            t = "1"
+            print("\nALGORITHM LIST:\n\t1. Breadth first search\n\t2. Depth first search\n\t3....\r")
+            t = input("Please input algorithm(default 1):")
+            stop = False
+            if t == "1":
+                state = breadth_first_search(initState)
+            elif t == "2":
+                depth = input("Input max depth (default 10): ")
+                try: d = int(depth)
+                except Exception: d = 10
+                state = depth_first_search(initState, d)
+            elif t == "3":
+                t = "fail"
+            else: state = breadth_first_search(initState)
+
+            printShortSolution(state)
+            m = input("Input another level (q for quit): ")
+        except Exception as e:
+            print(e)
+            m = input("This level is error. Choose another level(q for quit): ")
 
