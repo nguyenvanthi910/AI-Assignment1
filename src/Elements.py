@@ -87,20 +87,13 @@ class Block:
         self.control = control
         self.autoControl()
 
-    def split(self, xA, yA, xB, yB, control):
+    def split(self, xA, yA, xB, yB):
         """Tách khối liền nhau thành 2 khối và xét điều khiển cho khối"""
         self.A.x = xA
         self.A.y = yA
         self.B.x = xB
         self.B.y = yB
-        self.control = control
-
-    def seclectControl(self, x, y):
-        """Chọn control bằng tọa độ"""
-        tmp = Node("tmp", x, y)
-        if tmp == self.A:
-            return self.A
-        else: return self.B
+        self.control = self.A
 
     def changeControl(self):
         """
@@ -336,8 +329,7 @@ class Button(Point):
                 return True
             elif self.type == SPLITBTN:
                 block.split(self.lsPoint[0][0], self.lsPoint[0][1],
-                            self.lsPoint[1][0], self.lsPoint[1][1],
-                            block.seclectControl(self.lsPoint[0][0], self.lsPoint[0][1]))
+                            self.lsPoint[1][0], self.lsPoint[1][1])
             elif self.type == SHOWANDHIDE:
                 for i in self.lsPoint:
                     i.show()
@@ -383,12 +375,12 @@ class Map:
             atA = self.matrix[A.x][A.y]
             atB = self.matrix[B.x][B.y]    
             return atA.isValid(block.weight()) and atB.isValid(block.weight())
-        except IndexError: return False
+        except Exception: return False
     def isGoal(self, block):
         try:
             A = block.A
             return block.weight() == 2 and self.matrix[A.x][A.y].isGoal()
-        except IndexError: return False
+        except Exception: return False
 
     def enableButton(self, block):
         A = block.A
@@ -402,7 +394,7 @@ class Map:
             else:
                 checkerA = self.matrix[A.x][A.y].enable(block)
             return checkerA or checkerB
-        except IndexError:
+        except Exception:
             return False
 
     def getElement(self, row, col):

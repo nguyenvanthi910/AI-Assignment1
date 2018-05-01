@@ -79,9 +79,9 @@ Level 04 - code : 520967    v
 Level 05 - code : 028431    v
 Level 06 - code : 524383    v
 Level 07 - code : 189493    v
-Level 08 - code : 499707    fail
-Level 09 - code : 074355    fail
-Level 10 - code : 300590    fail
+Level 08 - code : 499707    v
+Level 09 - code : 074355    v
+Level 10 - code : 300590    v
 Level 11 - code : 291709    v
 Level 12 - code : 958640    v
 Level 13 - code : 448106    v

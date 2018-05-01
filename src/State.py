@@ -36,8 +36,8 @@ class State():
         self.map = map
         self.value = value
         self.mapChanged = mapChanged
-        self.goalA = None
-        self.goalB = None
+        self.goalA = []
+        self.goalB = []
 
     def getMap(self):
         if(self.mapChanged == True):
@@ -73,27 +73,27 @@ class State():
                 self.lsGoal.pop(0)
                 return [True, g]
             else: return [False, g]
-        else:
-            if self.block.control == self.block.A:
-                if self.goalA == None:
+        if self.block.control == self.block.A:
+            if not self.goalA:
+                return [False, None]
+            g = self.goalA[0]
+            A = self.block.A
+            if A.x == g.x and A.y == g.y:
+                self.goalA.pop(0)
+                if not self.goalA:
                     self.block.changeControl()
-                    return [True, "A"]
-                x, y = self.goalA[0]
-                A = self.block.A
-                if A.x == x and A.y == y:
-                    self.goalA.pop(0)
-                    return [True, [x,y]]
-                else: return [False, [x, y]]
-            else:
-                if self.goalB == None:
+                return [True, g]
+            else: return [False, g]
+        if self.block.control == self.block.B:
+            g = self.goalB[0]
+            B = self.block.B
+            if B.x == g.x and B.y == g.y:
+                self.goalB.pop(0)
+                if not self.goalB:
                     self.block.changeControl()
-                    return [True, "B"]
-                x, y = self.goalB[0]
-                B = self.block.B
-                if B.x == x and B.y == y:
-                    self.goalB.pop(0)
-                    return [True, [x, y]]
-                else: return [False, [x,y]]
+                return [True, g]
+            else: return [False, g]
+        return [False, None]
 
     def __eq__(self, other):
         return self.block == other.block and self.getMap() == other.getMap()
@@ -105,9 +105,7 @@ class State():
 
 def nextState(current):
     children = []
-    step = 8
-    if current.block.control == None:
-        step = 4
+    step = 4
     for i in range(step):
         newblock = deepcopy(current.block)
         mv = ""
@@ -123,23 +121,12 @@ def nextState(current):
         elif i == 3:
             mv = RIGHT + newblock.getCtrString()
             newblock.moveright()
-        else:
-            newblock.changeControl()
-            if i - 4 == 0:
-                mv = UP + newblock.getCtrString()
-                newblock.moveup()
-            elif i - 4 == 1:
-                mv = DOWN + newblock.getCtrString()
-                newblock.movedown()
-            elif i - 4 == 2:
-                mv = LEFT + newblock.getCtrString()
-                newblock.moveleft()
-            elif i - 4 == 3:
-                mv = RIGHT + newblock.getCtrString()
-                newblock.moveright()
+
         newstate = State(newblock, current.value + 1)
         newstate.move = mv
         newstate.lsGoal = current.lsGoal
+        newstate.goalA = current.goalA
+        newstate.goalB = current.goalB
         newstate.parent = current
         newstate.checkMapChange()
         if newstate.isValid():

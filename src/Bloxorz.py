@@ -21,7 +21,7 @@ def printSolusion(window, state):
     for i in root:
         window.addstr(5,5,str(i))
         window.refresh()
-        time.sleep(0.1)
+        time.sleep(0.5)
 
 class waiting(thread.Thread):
     def __init__(self, stop = False):
@@ -50,10 +50,8 @@ if __name__ == '__main__':
 
             initState = State(block, 0, map, True)
             initState.lsGoal = getLsGoal(ls, map)
-            if goalA:
-                initState.goalA = goalA
-            if goalB:
-                initState.goalB = goalB
+            initState.goalA = getLsGoal(goalA, map)
+            initState.goalB = getLsGoal(goalB, map)
             t = "1"
             print("\nALGORITHM LIST:\n\t1. Breadth first search\n\t2. Depth first search\n\t3....\r")
             t = input("Please input algorithm(default 1):")
@@ -76,4 +74,5 @@ if __name__ == '__main__':
             m = input("Input another level (q for quit): ")
         except Exception as e:
             print(e)
+            thread1.stop = True
             m = input("This level is error. Choose another level(q for quit): ")
