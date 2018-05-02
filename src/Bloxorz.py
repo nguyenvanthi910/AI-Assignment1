@@ -52,6 +52,7 @@ if __name__ == '__main__':
             initState.lsGoal = getLsGoal(ls, map)
             initState.goalA = getLsGoal(goalA, map)
             initState.goalB = getLsGoal(goalB, map)
+            print(initState)
             t = "1"
             print("\nALGORITHM LIST:\n\t1. Breadth first search\n\t2. Depth first search\n\t3....\r")
             t = input("Please input algorithm(default 1):")

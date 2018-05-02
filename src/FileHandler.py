@@ -39,6 +39,9 @@ def readFrom(filename):
     S&H w x y
     <danh sach toa do show>
     <danh sach toa do hide>
+    S&T w x y
+    <danh sach show>
+    <danh sach toggle>
     """
     try:
         file = open(f + filename, mode='r')
@@ -128,6 +131,18 @@ def readFrom(filename):
                 sh.lsPoint.append(matrix[i][j])
             for i , j in pairwise(nextline1):
                 sh.lsHide.append(matrix[i][j])
+            matrix[x][y] = sh
+        elif line.startswith("S&T"):
+            tmp = line.split()
+            tmp.pop(0)
+            w, x, y = [int(i) for i in tmp]
+            nextline = [int(k) for k in next(file).split()]
+            nextline1 = [int(k) for k in next(file).split()]
+            sh = Elements.Button(Elements.SHOWANDTOG, w, [], x, y)
+            for i, j in pairwise(nextline):
+                sh.lsShow.append(matrix[i][j])
+            for i , j in pairwise(nextline1):
+                sh.lsPoint.append(matrix[i][j])
             matrix[x][y] = sh
 
     map = Elements.Map(name, r, c, matrix)

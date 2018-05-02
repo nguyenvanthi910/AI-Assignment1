@@ -18,7 +18,10 @@ def get_web_map(i): return mapweb + str(i)
 def getLsGoal(ls, map):
     lsGoal = []
     for i, j in ls:
-        lsGoal.append(map.getElement(i, j))
+        if i == -1 and j == -1:
+            lsGoal.append(Button(CHANGECONTROL, 3, [], -1, -1))
+        else:
+            lsGoal.append(map.getElement(i, j))
     return lsGoal
 
 UP = " --> U "
@@ -32,7 +35,7 @@ class State():
         self.block = block
         self.parent = None
         self.move = None
-        self.lsGoal = None
+        self.lsGoal = []
         self.map = map
         self.value = value
         self.mapChanged = mapChanged
@@ -65,47 +68,53 @@ class State():
         return (g.x == A.x and g.y == A.y) or (g.x == B.x and g.y == B.y)
 
     def isGoal(self):
-        if(self.getMap().isGoal(self.block)): return [True, None]
+        A = self.block.A
+        B = self.block.B
         if self.block.control is None:
-            if not self.lsGoal: return [True, None]
+            if self.getMap().isGoal(self.block) or len(self.lsGoal) == 0:
+                return [True, None]
             g = self.lsGoal[0]
-            print(self.lsGoal)
-            print(g)
-            if g.w <= self.block.weight() and self.__cp__(g):
+            if g.w <= self.block.weight() and ((g.x == A.x and g.y == A.y) or (g.x == B.x and g.y == B.y)):
                 self.lsGoal.pop(0)
                 return [True, g]
-            if self.parent != None and self.parent.block.control != None:
-                if len(self.goalB) != 0:
-                    g = self.goalB[0]
-                    if g.x == self.block.B.x and g.y == self.block.B.y:
-                        self.goalB.pop(0)
-                        return [True, g]
+            if self.parent is not None and self.parent.block.control is not None:
                 if len(self.goalA) != 0:
                     g = self.goalA[0]
-                    if g.x == self.block.A.x and g.y == self.block.A.y:
+                    if g.x == A.x and g.y == A.y:
                         self.goalA.pop(0)
                         return [True, g]
-            return [False, g]
-        if self.block.control == self.block.A:
-            if not self.goalA:
+                if len(self.goalB) != 0:
+                    g = self.goalB[0]
+                    if g.x == B.x and g.y == B.y:
+                        self.goalB.pop(0)
+                        return [True, g]
+            return [False, None]
+        elif self.block.control == self.block.A:
+            if len(self.goalA) == 0:
+                self.block.changeControl()
                 return [False, None]
             g = self.goalA[0]
-            A = self.block.A
             if A.x == g.x and A.y == g.y:
                 self.goalA.pop(0)
                 if not self.goalA:
                     self.block.changeControl()
+                else:
+                    g = self.goalA[0]
+                    if(g.type == CHANGECONTROL):
+                        self.goalA.pop(0)
+                        self.block.changeControl()
+                        return [False, g]
                 return [True, g]
-            else: return [False, g]
-        if self.block.control == self.block.B:
+        elif self.block.control == self.block.B:
+            if len(self.goalB) == 0:
+                self.block.changeControl()
+                return [False, None]
             g = self.goalB[0]
-            B = self.block.B
             if B.x == g.x and B.y == g.y:
                 self.goalB.pop(0)
                 if not self.goalB:
                     self.block.changeControl()
                 return [True, g]
-            else: return [False, g]
         return [False, None]
 
     def __eq__(self, other):
