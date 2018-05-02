@@ -99,7 +99,7 @@ Level 24 - code : 088198    v
 Level 25 - code : 250453    v
 Level 26 - code : 426329    v
 Level 27 - code : 660141    v
-Level 28 - code : 769721    fail
+Level 28 - code : 769721    v
 Level 29 - code : 691859    fail
 Level 30 - code : 280351
 Level 31 - code : 138620
