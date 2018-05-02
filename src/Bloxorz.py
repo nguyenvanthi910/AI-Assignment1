@@ -7,8 +7,7 @@ except ImportError:
     import src.FileHandler as file
 import time
 import curses
-import threading as thread
-import sys
+import os
 
 def printSolusion(window, state):
     root = []
@@ -21,25 +20,7 @@ def printSolusion(window, state):
     for i in root:
         window.addstr(5,5,str(i))
         window.refresh()
-        time.sleep(0.1)
-
-class waiting(thread.Thread):
-    def __init__(self, stop = False):
-        thread.Thread.__init__(self)
-        self.stop = stop
-    def run(self):
-        self.wait()
-
-    def wait(self):
-        t = 0.5;
-        while not self.stop:
-            for i in range(4):
-                str = "Wating{0}".format("."*i)
-                sys.stdout.write("\r\t%-12s  %12d s" % (str, t))
-                sys.stdout.flush()
-                time.sleep(0.5)
-                t += 0.5
-
+        time.sleep(0.5)
 
 if __name__ == '__main__':
     m = '1'
@@ -52,28 +33,25 @@ if __name__ == '__main__':
             initState.lsGoal = getLsGoal(ls, map)
             initState.goalA = getLsGoal(goalA, map)
             initState.goalB = getLsGoal(goalB, map)
-            print(initState)
             t = "1"
             print("\nALGORITHM LIST:\n\t1. Breadth first search\n\t2. Depth first search\n\t3....\r")
             t = input("Please input algorithm(default 1):")
-            stop = False
-            thread1 = waiting(stop)
-            thread1.start()
             if t == "1":
                 state = breadth_first_search(initState)
             elif t == "2":
-                depth = input("Input max depth (default 10): ")
+                depth = input("Input max depth (default 50): ")
                 try: d = int(depth)
-                except Exception: d = 10
+                except Exception: d = 50
                 state = depth_first_search(initState, d)
             elif t == "3":
                 t = "fail"
-            else: state = breadth_first_search(initState)
-
-            thread1.stop = True
+            else:
+                stop = False
+                state = breadth_first_search(initState)
             curses.wrapper(printSolusion, state)
             m = input("Input another level (q for quit): ")
+            os.system('cls' if os.name == 'nt' else 'clear')
         except Exception as e:
             print(e)
-            thread1.stop = True
+            os.system('cls' if os.name == 'nt' else 'clear')
             m = input("This level is error. Choose another level(q for quit): ")

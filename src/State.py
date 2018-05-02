@@ -13,7 +13,15 @@ mapweb = "../maps/web/"
 def get_testcase(i): return testcase + str(i)
 def get_web_map(i): return mapweb + str(i)
 
-
+def getColor(index):
+    index = index % 5
+    return{
+        0:'\033[95m',
+        1:'\033[94m',
+        2:'\033[92m',
+        3:'\033[96m',
+        4:'\033[91m',
+        5:'\033[0m'}.get(index)
 
 def getLsGoal(ls, map):
     lsGoal = []
@@ -114,6 +122,12 @@ class State():
                 self.goalB.pop(0)
                 if not self.goalB:
                     self.block.changeControl()
+                else:
+                    g = self.goalB[0]
+                    if(g.type == CHANGECONTROL):
+                        self.goalB.pop(0)
+                        self.block.changeControl()
+                        return [False, g]
                 return [True, g]
         return [False, None]
 
@@ -174,9 +188,6 @@ def breadth_first_search(initState):
                 print("\n\nMove %d steps\n" % state.value)
                 print("Explored %d states\n\n" % counter)
                 return state
-            else:
-                print("Passed: " + str(value))
-                print(state)
         children = nextState(state)
         for i in children:
             if i not in explored:
@@ -219,44 +230,13 @@ def printShortSolution(state):
         parent = parent.parent
 
     root = reversed(root)
-    result = ''
+    color = 0
+    result = '' + getColor(color)
     for j, k in enumerate(root):
         if j % 5 != 0:
             result += str(k.shortSol())
-        else: result += str(k.shortSol()) + "\n"
+        else:
+            color += 1
+            result += str(k.shortSol()) + "\n" + getColor(color)
+    result += getColor(1)
     print(result)
-
-if __name__ == '__main__':
-    m = '1'
-    m = input("Input level: ")
-    while(m != 'q'):
-        try:
-            map, block, ls, goalA, goalB = file.readFrom(get_web_map(int(m)))
-
-            initState = State(block, 0, map, True)
-            initState.lsGoal = getLsGoal(ls, map)
-            if goalA:
-                initState.goalA = goalA
-            if goalB:
-                initState.goalB = goalB
-            t = "1"
-            print("\nALGORITHM LIST:\n\t1. Breadth first search\n\t2. Depth first search\n\t3....\r")
-            t = input("Please input algorithm(default 1):")
-            stop = False
-            if t == "1":
-                state = breadth_first_search(initState)
-            elif t == "2":
-                depth = input("Input max depth (default 10): ")
-                try: d = int(depth)
-                except Exception: d = 10
-                state = depth_first_search(initState, d)
-            elif t == "3":
-                t = "fail"
-            else: state = breadth_first_search(initState)
-
-            printShortSolution(state)
-            m = input("Input another level (q for quit): ")
-        except Exception as e:
-            print(e)
-            m = input("This level is error. Choose another level(q for quit): ")
-

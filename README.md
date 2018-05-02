@@ -71,7 +71,6 @@ Hiện thực solution cho game block and hole
     
     Cố gắng tìm ra hàm lượng giá để áp dụng heuristic
 
-
 Level 01 - code : 780464    v
 Level 02 - code : 290299    v
 Level 03 - code : 918660    v
@@ -100,8 +99,9 @@ Level 25 - code : 250453    v
 Level 26 - code : 426329    v
 Level 27 - code : 660141    v
 Level 28 - code : 769721    v
-Level 29 - code : 691859    fail
-Level 30 - code : 280351
-Level 31 - code : 138620
-Level 32 - code : 879021
-Level 33 - code : 614955
+Level 29 - code : 691859    v
+Level 30 - code : 280351    v
+Level 31 - code : 138620    v
+Level 32 - code : 879021    v
+Level 33 - code : 614955    v
+
