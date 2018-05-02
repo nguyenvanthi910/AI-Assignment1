@@ -66,13 +66,26 @@ class State():
 
     def isGoal(self):
         if(self.getMap().isGoal(self.block)): return [True, None]
-        if self.block.control == None:
+        if self.block.control is None:
             if not self.lsGoal: return [True, None]
             g = self.lsGoal[0]
+            print(self.lsGoal)
+            print(g)
             if g.w <= self.block.weight() and self.__cp__(g):
                 self.lsGoal.pop(0)
                 return [True, g]
-            else: return [False, g]
+            if self.parent != None and self.parent.block.control != None:
+                if len(self.goalB) != 0:
+                    g = self.goalB[0]
+                    if g.x == self.block.B.x and g.y == self.block.B.y:
+                        self.goalB.pop(0)
+                        return [True, g]
+                if len(self.goalA) != 0:
+                    g = self.goalA[0]
+                    if g.x == self.block.A.x and g.y == self.block.A.y:
+                        self.goalA.pop(0)
+                        return [True, g]
+            return [False, g]
         if self.block.control == self.block.A:
             if not self.goalA:
                 return [False, None]
@@ -96,7 +109,7 @@ class State():
         return [False, None]
 
     def __eq__(self, other):
-        return self.block == other.block and self.getMap() == other.getMap()
+        return other != None and self.block == other.block and self.getMap() == other.getMap()
 
     def __repr__(self):
         return str(self.move) + "\r" + str(self.getMap().__repr__(self.block)) + "\r"
@@ -142,6 +155,7 @@ def breadth_first_search(initState):
         state = queue.pop(0)
         check, value = state.isGoal()
         counter += 1
+        explored.append(state)
         if check == True:
             queue.clear()
             explored.clear()
@@ -154,7 +168,6 @@ def breadth_first_search(initState):
             else:
                 print("Passed: " + str(value))
                 print(state)
-        explored.append(state)
         children = nextState(state)
         for i in children:
             if i not in explored:

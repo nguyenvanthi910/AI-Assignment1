@@ -268,6 +268,9 @@ class Point:
     def enable(self, block):
         return False
 
+    def __eq__(self, other):
+        return other != None and other.x == self.x and other.y == self.y and other.w == self.w
+
     def __repr__(self):
         """return "%d\t" % (self.w)"""
         if self.w == 0: return "   "
@@ -299,12 +302,10 @@ class Button(Point):
     lsPoint: là danh sách các điểm mà nó có tác dụng.
     """
     def __init__(self, typex, w, lsPoint, x, y):
-        self.x = x
-        self.y = y
+        super().__init__(w, x, y)
         self.type = typex
         self.lsPoint = lsPoint
         self.lsHide = []
-        self.w = w
         self.ig = False
         self.autoIg = False
 
@@ -330,6 +331,7 @@ class Button(Point):
             elif self.type == SPLITBTN:
                 block.split(self.lsPoint[0][0], self.lsPoint[0][1],
                             self.lsPoint[1][0], self.lsPoint[1][1])
+                return True
             elif self.type == SHOWANDHIDE:
                 for i in self.lsPoint:
                     i.show()
@@ -340,6 +342,13 @@ class Button(Point):
 
     def isGoal(self):
         return self.type == GOAL
+
+    def __eq__(self, other):
+        return other != None and \
+               other.x == self.x and \
+               other.y == self.y and \
+               other.w == self.w and \
+               other.type == self.type
 
     def __repr__(self):
         """return "%d(%s)\t" % (self.w, self.type)"""

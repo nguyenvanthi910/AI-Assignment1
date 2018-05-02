@@ -21,7 +21,7 @@ def printSolusion(window, state):
     for i in root:
         window.addstr(5,5,str(i))
         window.refresh()
-        time.sleep(0.5)
+        time.sleep(0.1)
 
 class waiting(thread.Thread):
     def __init__(self, stop = False):

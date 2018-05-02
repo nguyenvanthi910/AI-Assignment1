@@ -86,7 +86,7 @@ Level 11 - code : 291709    v
 Level 12 - code : 958640    v
 Level 13 - code : 448106    v
 Level 14 - code : 210362    v
-Level 15 - code : 098598    fail
+Level 15 - code : 098598    v
 Level 16 - code : 000241    fail
 Level 17 - code : 683596    v
 Level 18 - code : 284933    v
