@@ -7,7 +7,8 @@ try:
 except ImportError:
     from src.Elements import  *
     import src.FileHandler as file
-
+from queue import PriorityQueue
+from math import *
 
 testcase = "../testcase/"
 mapweb = "../maps/web/"
@@ -132,11 +133,22 @@ class State():
         return [False, None]
 
     def distance(self):
-        if self.block.A != self.lsGoal[0]:
-           return sqrt((self.lsGoal[0].x- self.block.A.x)*(self.lsGoal[0].x - self.block.A.x)+(self.lsGoal[0].y - self.block.A.y)*(self.lsGoal[0].y - self.block.A.y))
-
+        A = self.block.A
+        g = self.lsGoal[0]
+        if self.block.control == A and self.goalA:
+            g = self.goalA[0]
+        elif self.block.control == self.block.B and self.goalB:
+            A = self.block.B
+            g = self.goalB[0]
+        if g.type == CHANGECONTROL:
+            g = self.lsGoal[0]
+        vectorAG = [g.x - A.x, g.y - A.y]
+        return sqrt(vectorAG[0]**2 + vectorAG[1]**2)
     def __eq__(self, other):
         return other != None and self.block == other.block and self.getMap() == other.getMap()
+
+    def __lt__(self, other):
+        return self.distance() < other.distance()
 
     def __repr__(self):
         return str(self.move) + "\r" + str(self.getMap().__repr__(self.block)) + "\r"
@@ -200,7 +212,7 @@ def breadth_first_search(initState):
     print("Solution not found.")
     return initState
 
-def depth_first_search(initState, maxdepth = 10):
+def depth_first_search(initState, maxdepth = 50):
     counter = 0
     stack = list()
     explored = list()
@@ -228,31 +240,28 @@ def depth_first_search(initState, maxdepth = 10):
 
 
 
-def hill_climbing(initState):
+def best_first_search(initState):
     counter = 0
-    queue = list()
+    queue = PriorityQueue()
     explored = list()
-    queue.append(initState)
-    while queue:
-        state = queue.pop()
+    queue.put(initState)
+    while not queue.empty():
+        state = queue.get()
         check, value = state.isGoal()
         counter += 1
-        explored.append(state)
-        currentdistance = state.distance()
         if check == True:
-            queue.clear()
-            explored.clear()
             if value == None:
-               print(initState)
-               printShortSolution(state)
-               print("\n\nMove %d steps\n" % state.value)
-               print("Explored %d states\n\n" % counter)
-               return state
+                print(initState)
+                printShortSolution(state)
+                print("\n\nMove %d steps\n" % state.value)
+                print("Explored %d states\n\n" % counter)
+                return state
+        explored.append(state)
         children = nextState(state)
         for i in children:
-            if i.distance() <= currentdistance:
-                queue.append(i)
-    print("Solution not found.")
+            if i not in explored:
+                queue.put(i)
+    print("Don't have any solutions.")
     return initState
 
 
