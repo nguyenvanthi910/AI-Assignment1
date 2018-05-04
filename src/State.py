@@ -8,6 +8,7 @@ except ImportError:
     from src.Elements import  *
     import src.FileHandler as file
 
+
 testcase = "../testcase/"
 mapweb = "../maps/web/"
 def get_testcase(i): return testcase + str(i)
@@ -49,6 +50,7 @@ class State():
         self.mapChanged = mapChanged
         self.goalA = []
         self.goalB = []
+        self.distance = None
 
     def getMap(self):
         if(self.mapChanged == True):
@@ -58,7 +60,6 @@ class State():
             while p.mapChanged == False:
                 p = p.parent
             return p.map
-
 
     def checkMapChange(self):
         m = deepcopy(self.getMap())
@@ -131,6 +132,10 @@ class State():
                 return [True, g]
         return [False, None]
 
+    def distance(self):
+        if self.block.A != self.lsGoal[0]:
+           return sqrt((lsGoal[0].x- A.x)*(lsGoal[0].x - A.x)+(lsGoal[0].y - A.y)*(lsGoal[0].y - A.y))
+
     def __eq__(self, other):
         return other != None and self.block == other.block and self.getMap() == other.getMap()
 
@@ -138,6 +143,7 @@ class State():
         return str(self.move) + "\r" + str(self.getMap().__repr__(self.block)) + "\r"
     def shortSol(self):
         return str(self.move)
+
 
 def nextState(current):
     children = []
@@ -164,6 +170,7 @@ def nextState(current):
         newstate.goalA = current.goalA
         newstate.goalB = current.goalB
         newstate.parent = current
+        newstate.distance = current
         newstate.checkMapChange()
         if newstate.isValid():
             children.append(newstate)
@@ -220,6 +227,36 @@ def depth_first_search(initState, maxdepth = 10):
                 stack.append(i)
     print("Don't have any solutions.")
     return initState
+
+
+
+def hill_climbing(initState):
+    counter = 0
+    queue = list()
+    explored = list()
+    queue.append(initState)
+    while queue:
+        state = queue.pop()
+        check, value = state.isGoal()
+        counter += 1
+        explored.append(state)
+        currentdistance = state.distance()
+        if check == True:
+            queue.clear()
+            explored.clear()
+            if value == None:
+               print(initState)
+               printShortSolution(state)
+               print("\n\nMove %d steps\n" % state.value)
+               print("Explored %d states\n\n" % counter)
+               return state
+        children = nextState(state)
+        for i in children:
+            if i.distance() <= currentdistance:
+                queue.append(i)
+    print("Solution not found.")
+    return initState
+
 
 def printShortSolution(state):
     root = []

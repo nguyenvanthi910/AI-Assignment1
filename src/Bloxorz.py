@@ -34,7 +34,7 @@ if __name__ == '__main__':
             initState.goalA = getLsGoal(goalA, map)
             initState.goalB = getLsGoal(goalB, map)
             t = "1"
-            print("\nALGORITHM LIST:\n\t1. Breadth first search\n\t2. Depth first search\n\t3....\r")
+            print("\nALGORITHM LIST:\n\t1. Breadth first search\n\t2. Depth first search\n\t3. Best first search\n\t4. Fail. \r")
             t = input("Please input algorithm(default 1):")
             if t == "1":
                 state = breadth_first_search(initState)
@@ -44,6 +44,8 @@ if __name__ == '__main__':
                 except Exception: d = 50
                 state = depth_first_search(initState, d)
             elif t == "3":
+                state = hill_climbing(initState)
+            elif t == "4":
                 t = "fail"
             else:
                 stop = False
