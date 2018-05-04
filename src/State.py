@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 try:
     from Elements import *
     import FileHandler as file
@@ -187,6 +186,7 @@ def nextState(current):
     return children
 
 def breadth_first_search(initState):
+    initState.getMap().name +="(breadth first search)"
     counter = 0
     queue = list()
     explored = list()
@@ -200,19 +200,15 @@ def breadth_first_search(initState):
             queue.clear()
             explored.clear()
             if value == None:
-                print(initState)
-                printShortSolution(state)
-                print("\n\nMove %d steps\n" % state.value)
-                print("Explored %d states\n\n" % counter)
-                return state
+                return [state, counter]
         children = nextState(state)
         for i in children:
             if i not in explored:
                 queue.append(i)
-    print("Solution not found.")
-    return initState
+    return [initState, -1]
 
 def depth_first_search(initState, maxdepth = 50):
+    initState.getMap().name +="(depth first search)"
     counter = 0
     stack = list()
     explored = list()
@@ -223,11 +219,7 @@ def depth_first_search(initState, maxdepth = 50):
         counter += 1
         if check == True:
             if value == None:
-                print(initState)
-                printShortSolution(state)
-                print("\n\nMove %d steps\n" % state.value)
-                print("Explored %d states\n\n" % counter)
-                return state
+                return [state, counter]
         explored.append(state)
         if state.value > maxdepth:
             continue
@@ -235,12 +227,12 @@ def depth_first_search(initState, maxdepth = 50):
         for i in children:
             if i not in explored:
                 stack.append(i)
-    print("Don't have any solutions.")
-    return initState
+    return [initState, -1]
 
 
 
 def best_first_search(initState):
+    initState.getMap().name += "(best first search)"
     counter = 0
     queue = PriorityQueue()
     explored = list()
@@ -251,21 +243,16 @@ def best_first_search(initState):
         counter += 1
         if check == True:
             if value == None:
-                print(initState)
-                printShortSolution(state)
-                print("\n\nMove %d steps\n" % state.value)
-                print("Explored %d states\n\n" % counter)
-                return state
+                return [state, counter]
         explored.append(state)
         children = nextState(state)
         for i in children:
             if i not in explored:
                 queue.put(i)
-    print("Don't have any solutions.")
-    return initState
+    return [initState, -1]
 
 
-def printShortSolution(state):
+def getMoveStep(state):
     root = []
     root.append(state)
     parent = state.parent
@@ -274,13 +261,13 @@ def printShortSolution(state):
         parent = parent.parent
 
     root = reversed(root)
-    color = 0
-    result = '' + getColor(color)
+    count = 0
+    result = '%d.\t' % count
     for j, k in enumerate(root):
+        if j == 0: continue
         if j % 5 != 0:
             result += str(k.shortSol())
         else:
-            color += 1
-            result += str(k.shortSol()) + "\n" + getColor(color)
-    result += getColor(1)
-    print(result)
+            count += 1
+            result += str(k.shortSol()) + ("\n%d.\t" % count)
+    return result

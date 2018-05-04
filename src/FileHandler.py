@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
-import sys
 try:
 	from src import Elements
 except ImportError:
@@ -48,7 +47,7 @@ def readFrom(filename):
     except IOError:
         file = open(f + filename[3:], mode='r')
 
-    name = next(file)
+    name = str(next(file)).rstrip()
     r, c = [int(x) for x in next(file).split()]
     matrix = list()
     blockarr = []
