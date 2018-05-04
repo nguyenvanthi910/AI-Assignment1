@@ -50,7 +50,6 @@ class State():
         self.mapChanged = mapChanged
         self.goalA = []
         self.goalB = []
-        self.distance = None
 
     def getMap(self):
         if(self.mapChanged == True):
@@ -134,7 +133,7 @@ class State():
 
     def distance(self):
         if self.block.A != self.lsGoal[0]:
-           return sqrt((lsGoal[0].x- A.x)*(lsGoal[0].x - A.x)+(lsGoal[0].y - A.y)*(lsGoal[0].y - A.y))
+           return sqrt((self.lsGoal[0].x- self.block.A.x)*(self.lsGoal[0].x - self.block.A.x)+(self.lsGoal[0].y - self.block.A.y)*(self.lsGoal[0].y - self.block.A.y))
 
     def __eq__(self, other):
         return other != None and self.block == other.block and self.getMap() == other.getMap()
@@ -170,7 +169,6 @@ def nextState(current):
         newstate.goalA = current.goalA
         newstate.goalB = current.goalB
         newstate.parent = current
-        newstate.distance = current
         newstate.checkMapChange()
         if newstate.isValid():
             children.append(newstate)
