@@ -1,4 +1,4 @@
-\documentclass[a4paper]{article}
+\documentclass[11pt,a4paper]{article}
 \usepackage{vntex}
 %\usepackage[english,vietnam]{babel}
 %\usepackage[utf8]{inputenc}
@@ -157,7 +157,7 @@ KHOA KHOA HỌC - KỸ THUẬT MÁY TÍNH
 \end{tabular}
 \end{table}
 
-\vspace{1cm}
+\vspace{0.75cm}
 \begin{center}
 {\footnotesize Tp. Hồ Chí Minh, Tháng 5/2018}
 \end{center}
@@ -549,9 +549,8 @@ KHOA KHOA HỌC - KỸ THUẬT MÁY TÍNH
 \begin{center}
 	\begin{tabular}{|c|r|c|c|r|c|c|r|}
 		\hline
-		& \multicolumn{3}{|c|}{Breadth First Search} & \multicolumn{3}{|c|}{Best First Search} & \\
-		\hline
-		Bài & Thời gian  & Bước chuyển & Trạng thái & Thời gian & Bước chuyển & Trạng thái & Hiệu năng\\ \hline
+	\multirow{2}{1 cm}{ Bài} & \multicolumn{3}{|c|}{Breadth First Search} & \multicolumn{3}{|c|}{Best First Search} & \multirow{2}{1 cm}{Hiệu năng} \\	
+	& Thời gian  & Bước & Trạng thái & Thời gian & Bước & Trạng thái & \\ \hline
 		1   & 0.346270 s	& 7		& 85	& 0.030900 s	& 7		& 9 	& 8.923672 \\ \hline
 		2   & 4.163358 s	& 17	& 626	& 0.221260 s	& 18	& 39	& 5.314460 \\ \hline
 		3	& 1.073998 s	& 19	& 174	& 0.298219 s	& 30	& 53	& 27.767183 \\ \hline
@@ -588,20 +587,20 @@ KHOA KHOA HỌC - KỸ THUẬT MÁY TÍNH
 	\end{tabular}	
 \end{center}
 \subsection{So sánh hiệu năng Best First Search so với Breadth First Search}
-\begin{flushleft}
-	\hspace{1 cm}
+\coler{black}
+\begin{center}
 	\begin{quotation}
 		\textbullet \hspace{0.25 cm} Thời gian trung bình là 80.3509964, thời gian tìm kiếm lời giải ít hơn so với Breadth First Search do nó luôn tìm đường đến mục tiêu gần nhất $\Rightarrow$ Thời gian tối ưu hơn \\
 		\textbullet	\hspace{0.25 cm}	Trạng thái trung bình là 20.1818182, đa số trạng thái của Best First Search ít hơn so với Breadth First Search nên về bộ nhớ sẽ chứa ít hơn, tuy nhiên do vài bài bị dính vấn đề tôi ưu cục bộ nên trạng thái nhiều hơn dẫn đến tổng số trạng thái trung bình của Best First Search sẽ nhiều hơn Breadth First Search $\Rightarrow$ Nhìn tổng quát thì Best First Search vẫn sẽ tốt hơn\\
 		\textbullet \hspace{0.25 cm} Mà nhìn chung Breadth First Search sẽ tối ưu hơn so với Depth First Search\\
 		$\Rightarrow$ Vậy Best First Search tối ưu về thời gian và bộ nhớ hơn so với Breadth First Search và Depth First Search
 	\end{quotation}	
-\end{flushleft}
-
+\end{center}
 \subsection{Cách chạy}
 \begin{description}
 	\item \hspace{1 cm}	Chạy lệnh python3 src/Bloxors.py runall để chạy hết các màn game 1 lượt để xuất ra kết quả các trạng thái, bước chuyển và thời gian chạy giữa Best First Search và Breadth First Search (Riêng Depth First Search do phải giới hạn chiều dài của cây nên khó so sánh hết các màn 1 lần được). Kết quả sẽ hiện trên file result.txt như hình dưới:
 \end{description}
+\newpage
 \begin{center}
 	\begin{figure}[htp]
 		\begin{center}
